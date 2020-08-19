@@ -125,7 +125,7 @@
      
         - name: Start mysql 
           service:
-            name: "{{ db_service }}"
+            name: "{{ db.service }}"
             enabled: true
             state: started
 
