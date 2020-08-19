@@ -129,10 +129,10 @@
             enabled: true
             state: started
 
-        - name: Setting up mariadb password 
-          mysql_user:
-            name: "{{ db['user'] }}"
-            password: "{{ db['password'] }}"
+#         - name: Setting up mariadb password 
+#           mysql_user:
+#             name: "{{ db['user'] }}"
+#             password: "{{ db['password'] }}"
 
         - name: DB users have privileges on all databases
           mysql_user:
@@ -140,7 +140,6 @@
             priv: "*.*:ALL"
             append_privs: yes
             password: "{{ db['password']}}"
-#             login_password: "{{ db['password']}}"
             host: '%'
 
         - name: Copy database dump file
@@ -153,6 +152,5 @@
             name: "{{ db['database'] }}"
             state: import
             target: "/tmp/{{ db['backupfile'] }}"
-            login_password: "{{ db['password']}}"
 
 ...
