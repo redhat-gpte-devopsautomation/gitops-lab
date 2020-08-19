@@ -1,10 +1,9 @@
-[haproxy]
-servera.lab.example.com
+[frontends]
+frontend
 
-[backend]
-serverb.lab.example.com 
-serverc.lab.example.com 
+[backends]
+app0
+app1
 
-[db]
-serverd.lab.example.com
-
+[dbs]
+appdb
