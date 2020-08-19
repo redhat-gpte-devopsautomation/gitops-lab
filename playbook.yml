@@ -39,7 +39,7 @@
     - name: DB users have privileges on all databases
       mysql_user:
         name: "{{ db['user']}}"
-        priv: "*.*:ALL"
+        priv: "*.*:ALL,GRANT"
         append_privs: yes
         password: "{{ db['password']}}"
         host: '%'
