@@ -50,9 +50,9 @@
           
         - name: Start httpd
           service:
-          name: "{{ backend.service }}"
-          enabled: true
-          state: started
+            name: "{{ backend.service }}"
+            enabled: true
+            state: started
 
   ####### Install frontend ###############
     - name: Block of backend server tasks
