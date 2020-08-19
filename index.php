@@ -1,6 +1,6 @@
 
 <?php
-	$db=mysqli_connect("servera.lab.example.com","root","redhat","userdb");
+	$db=mysqli_connect("servera.lab.example.com","bob","redhat","userdb");
 
 	if (mysqli_connect_errno()){
 		echo "Failed to connect";
