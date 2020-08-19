@@ -1,22 +1,27 @@
-    db:
-      user: root
-      database: userdb
-      password: redhat
-      server: serverd.lab.example.com
-      backupfile: userdb.backup
-    backend_server_ip:
-      - 172.25.250.11
-      - 172.25.250.12
-    db_pkg:
-      - mariadb
-      - mariadb-server
-      - MySQL-python
-    httpd_pkg: 
-      - httpd
-      - php
-      - php-mysql
-    haproxy_pkg:
-      - haproxy
-    httpd_srv: httpd
-    db_srv: mariadb
-    haproxy_srv: haproxy
+---
+
+db:
+  user: root
+  database: userdb
+  password: redhat
+  server: serverd.lab.example.com
+  backupfile: userdb.backup
+  packages:
+    - mariadb
+    - mariadb-server
+    - MySQL-python
+  service: mariadb
+        
+backend:
+  packages: 
+    - httpd
+    - php
+    - php-mysql
+  service: httpd
+    
+frontend:
+  packages:
+    - haproxy
+  service: haproxy
+
+...
