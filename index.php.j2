@@ -3,7 +3,7 @@
 <head>
 <title>{{ web_title }}</title>
 </head>
-<body background=images/ansible_bg.png>
+<body bgcolor=red>
 <center>
 <?php
 	$db=mysqli_connect("{{ groups['dbs'][0] }}","{{ db.user }}","{{ db.password }}","{{ db.database }}");
