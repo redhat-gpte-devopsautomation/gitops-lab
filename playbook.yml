@@ -8,13 +8,14 @@
   handlers:
     - name: restart_httpd
       service:
-        name: httpd
+        name: "{{ backend.service }}"
         state: restarted
 
     - name: restart_haproxy
       service:
-        name: haproxy
+        name: "{{ frontend.service }}"
         state: restarted
+ 
   tasks:
   
   ####### Firewall setup for all host ############
@@ -23,7 +24,6 @@
         name: firewalld
         state: latest
 
-  
   ####### Install backend #############
     - name: Block of backend server tasks
       when: inventory_hostname in groups['backends']
@@ -39,7 +39,7 @@
           yum:
           name: "{{ item }}"
           state: latest
-        loop: "{{ backend_packages }}"
+        loop: "{{ backend.packages }}"
 
       - name: Copy php program file
         template:
@@ -50,7 +50,7 @@
           
       - name: Start apache
         service:
-        name: "{{ httpd_service }}"
+        name: "{{ backend.service }}"
         enabled: true
         state: started
 
@@ -85,7 +85,7 @@
           yum: 
             name: "{{ item  }}"
             state: latest
-          loop: "{{ haproxy_pkg }}"
+          loop: "{{ frontend.packages }}"
     
         - name: Copy haproxy template
           template:
@@ -96,7 +96,7 @@
  
         - name: Start haproxy 
           service:
-            name: "{{ haproxy_srv }}"
+            name: "{{ frontend.service }}"
             enabled: true
             state: started
             
@@ -115,7 +115,7 @@
           yum: 
             name: "{{ item  }}"
             state: latest
-          loop: "{{ db_packges }}"
+          loop: "{{ db.packges }}"
      
         - name: Start mysql 
           service:
