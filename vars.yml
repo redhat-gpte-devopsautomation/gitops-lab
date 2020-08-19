@@ -1,7 +1,7 @@
 ---
 
 db_vars:
-  user: luc
+  user: devops
   privilege: *.*:ALL,GRANT
   database: userdb
   password: redhat
