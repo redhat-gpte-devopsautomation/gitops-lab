@@ -1,11 +1,9 @@
 ---
-- name: Play to include variables
-  hosts: all
-  vars_files: 
-    - vars.yml 
- 
+
 - name: Play to setup db server
   hosts: dbs
+  vars_files: 
+    - vars.yml
   tasks:
 
     - name: Install Firewalld
@@ -60,6 +58,8 @@
  
 - name: Play to setup backend servers
   hosts: backends
+  vars_files: 
+    - vars.yml
   handlers:
   
     - name: restart_httpd
@@ -109,6 +109,8 @@
  
 - name: Configure webserver and db with load balancer
   hosts: frontends
+  vars_files: 
+    - vars.yml
   handlers:
   
     - name: restart_haproxy
