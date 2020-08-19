@@ -2,7 +2,7 @@
 
 db_vars:
   user: devops
-  privilege: *.*:ALL,GRANT
+  privilege: "*.*:ALL,GRANT"
   database: userdb
   password: redhat
   server: serverd.lab.example.com
