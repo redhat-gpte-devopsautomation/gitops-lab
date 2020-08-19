@@ -1,7 +1,7 @@
 ---
 
 db:
-  user: root
+  user: root1
   database: userdb
   password: redhat
   server: serverd.lab.example.com
