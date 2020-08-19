@@ -1,6 +1,6 @@
 ---
 
-db_vars:
+db:
   user: devops
   privilege: "*.*:ALL,GRANT"
   database: userdb
