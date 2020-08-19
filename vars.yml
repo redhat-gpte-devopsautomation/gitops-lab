@@ -1,7 +1,8 @@
 ---
 
-db:
+db_vars:
   user: luc
+  privilege: *.*:ALL,GRANT
   database: userdb
   password: redhat
   server: serverd.lab.example.com
