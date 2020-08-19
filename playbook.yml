@@ -37,22 +37,22 @@
         
         - name: Install httpd
           yum:
-          name: "{{ item }}"
-          state: latest
-        loop: "{{ backend.packages }}"
+            name: "{{ item }}"
+            state: latest
+          loop: "{{ backend.packages }}"
 
-      - name: Copy php program file
-        template:
-          src: index.j2
-          dest: /var/www/html/index.php
-        notify:
-          - restart_httpd
+        - name: Copy php program file
+          template:
+            src: index.j2
+            dest: /var/www/html/index.php
+          notify:
+            - restart_httpd
           
-      - name: Start apache
-        service:
-        name: "{{ backend.service }}"
-        enabled: true
-        state: started
+        - name: Start httpd
+          service:
+          name: "{{ backend.service }}"
+          enabled: true
+          state: started
 
   ####### Install frontend ###############
     - name: Block of backend server tasks
