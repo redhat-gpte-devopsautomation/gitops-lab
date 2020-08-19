@@ -121,7 +121,7 @@
           yum: 
             name: "{{ item  }}"
             state: latest
-          loop: "{{ db.packges }}"
+          loop: "{{ db.packages }}"
      
         - name: Start mysql 
           service:
