@@ -1,24 +1,74 @@
 ---
-
-- name: Configure webserver and db with load balancer
+- name: Play to include variables
   hosts: all
   vars_files: 
-    - vars.yml   
+    - vars.yml 
+ 
+- name: Play to setup db server
+  hosts: dbs
+  tasks:
 
+    - name: Install Firewalld
+      yum:
+        name: firewalld
+        state: latest
+        
+    - name: Start firewalld
+      service:
+        name: firewalld
+        enabled: yes
+        state: started
+        
+    - name: Open mysql port
+      firewalld:
+        service: mysql
+        state: enabled
+        immediate: true
+        permanent: true
+
+    - name: Install mysql
+      yum: 
+        name: "{{ item  }}"
+        state: latest
+      loop: "{{ db.packages }}"
+
+    - name: Start mysql 
+      service:
+        name: "{{ db.service }}"
+        enabled: true
+        state: started
+
+    - name: DB users have privileges on all databases
+      mysql_user:
+        name: "{{ db['user']}}"
+        priv: "*.*:ALL"
+        append_privs: yes
+        password: "{{ db['password']}}"
+        host: '%'
+
+    - name: Copy database dump file
+      copy:
+        src: "{{ db['backupfile']}}"
+        dest: /tmp
+
+    - name: Restore database
+      mysql_db:
+        name: "{{ db['database'] }}"
+        state: import
+        target: "/tmp/{{ db['backupfile'] }}"
+  
+ 
+- name: Play to setup backend servers
+  hosts: backends
   handlers:
+  
     - name: restart_httpd
       service:
         name: "{{ backend.service }}"
         state: restarted
 
-    - name: restart_haproxy
-      service:
-        name: "{{ frontend.service }}"
-        state: restarted
- 
   tasks:
-  
-  ####### Firewall setup for all host ############
+ 
     - name: Install Firewalld
       yum:
         name: firewalld
@@ -30,127 +80,95 @@
         enabled: yes
         state: started
 
-  ####### Install backend #############
-    - name: Block of backend server tasks
-      when: inventory_hostname in groups['backends']
-      block:
-        - name: Open httpd port
-          firewalld:
-            service: http
-            state: enabled
-            immediate: true
-            permanent: true
-        
-        - name: Install httpd
-          yum:
-            name: "{{ item }}"
-            state: latest
-          loop: "{{ backend.packages }}"
+    - name: Open httpd port
+      firewalld:
+        service: http
+        state: enabled
+        immediate: true
+        permanent: true
 
-        - name: Copy php program file
-          template:
-            src: index.j2
-            dest: /var/www/html/index.php
-          notify:
-            - restart_httpd
-          
-        - name: Start httpd
-          service:
-            name: "{{ backend.service }}"
-            enabled: true
-            state: started
+    - name: Install httpd
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ backend.packages }}"
 
-  ####### Install frontend ###############
-    - name: Block of backend server tasks
-      when: inventory_hostname in groups['frontends']
-      block:
-        - name: Open haproxy port
-          firewalld:
-            service: http
-            state: enabled
-            immediate: true
-            permanent: true
-        
-        - name: Open haproxy statistics port
-          firewalld:
-            port: 5000/tcp
-            state: enabled
-            immediate: true
-            permanent: true
+    - name: Copy php program file
+      template:
+        src: index.j2
+        dest: /var/www/html/index.php
+      notify:
+        - restart_httpd
+
+    - name: Start httpd
+      service:
+        name: "{{ backend.service }}"
+        enabled: true
+        state: started
  
-        - name: enable selinux boolean
-          seboolean:
-            name: "{{ item }}"
-            state: yes
-            persistent: yes
-          loop:
-            - httpd_can_network_connect_db
-            - httpd_can_network_connect
-        
-        - name: Install haproxy
-          yum: 
-            name: "{{ item  }}"
-            state: latest
-          loop: "{{ frontend.packages }}"
-    
-        - name: Copy haproxy template
-          template:
-            src: haproxy.j2
-            dest: /etc/haproxy/haproxy.cfg
-          notify:
-            - restart_haproxy
  
-        - name: Start haproxy 
-          service:
-            name: "{{ frontend.service }}"
-            enabled: true
-            state: started
-            
-  ####### Install Database ###############
-    - name: Block of backend server tasks
-      when: inventory_hostname in groups['dbs']
-      block:
-        - name: Open mysql port
-          firewalld:
-            service: mysql
-            state: enabled
-            immediate: true
-            permanent: true
-            
-        - name: Install mysql
-          yum: 
-            name: "{{ item  }}"
-            state: latest
-          loop: "{{ db.packages }}"
-     
-        - name: Start mysql 
-          service:
-            name: "{{ db.service }}"
-            enabled: true
-            state: started
+- name: Configure webserver and db with load balancer
+  hosts: frontends
+  handlers:
+  
+    - name: restart_haproxy
+      service:
+        name: "{{ frontend.service }}"
+        state: restarted
+ 
+  tasks:
 
-#         - name: Setting up mariadb password 
-#           mysql_user:
-#             name: "{{ db['user'] }}"
-#             password: "{{ db['password'] }}"
+    - name: Install Firewalld
+      yum:
+        name: firewalld
+        state: latest
+        
+    - name: Start firewalld
+      service:
+        name: firewalld
+        enabled: yes
+        state: started
 
-        - name: DB users have privileges on all databases
-          mysql_user:
-            name: "{{ db['user']}}"
-            priv: "*.*:ALL"
-            append_privs: yes
-            password: "{{ db['password']}}"
-            host: '%'
+    - name: Open haproxy port
+      firewalld:
+        service: http
+        state: enabled
+        immediate: true
+        permanent: true
 
-        - name: Copy database dump file
-          copy:
-            src: "{{ db['backupfile']}}"
-            dest: /tmp
+    - name: Open haproxy statistics port
+      firewalld:
+        port: 5000/tcp
+        state: enabled
+        immediate: true
+        permanent: true
 
-        - name: Restore database
-          mysql_db:
-            name: "{{ db['database'] }}"
-            state: import
-            target: "/tmp/{{ db['backupfile'] }}"
+    - name: enable selinux boolean
+      seboolean:
+        name: "{{ item }}"
+        state: yes
+        persistent: yes
+      loop:
+        - httpd_can_network_connect_db
+        - httpd_can_network_connect
+
+    - name: Install haproxy
+      yum: 
+        name: "{{ item  }}"
+        state: latest
+      loop: "{{ frontend.packages }}"
+
+    - name: Copy haproxy template
+      template:
+        src: haproxy.j2
+        dest: /etc/haproxy/haproxy.cfg
+      notify:
+        - restart_haproxy
+
+    - name: Start haproxy 
+      service:
+        name: "{{ frontend.service }}"
+        enabled: true
+        state: started
 
 ...
