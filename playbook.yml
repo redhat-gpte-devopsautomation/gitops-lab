@@ -102,6 +102,11 @@
         state: latest
       loop: "{{ backend.packages }}"
 
+    - name: Copy images
+      copy:
+        src: images
+        dest: /var/www/html/images
+
     - name: Copy php program file
       template:
         src: index.php.j2
