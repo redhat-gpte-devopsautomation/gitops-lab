@@ -3,7 +3,7 @@
 <head>
 <title>{{ web_title }}</title>
 </head>
-<body bgcolor=red>
+<body>
 <center>
 <?php
 	$db=mysqli_connect("{{ groups['dbs'][0] }}","{{ db.user }}","{{ db.password }}","{{ db.database }}");
@@ -11,7 +11,7 @@
 	
 	echo "<h1> Failed to connect <h1>"; 
 	}else {
-	echo "<h1> <img src=images/ansible_bg.png alt='Ansible Automation Platform' width=100 height=80> </h1>";
+	echo "<h1> <img src=images/ansible_bg.png alt='Ansible Automation Platform' width=300 height=100> </h1>";
 	}
 	
 	$sql="SELECT username,userpass,usershell,userhome from login where username=\"$_GET[name]\"";
