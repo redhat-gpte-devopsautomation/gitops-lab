@@ -80,6 +80,15 @@
         enabled: yes
         state: started
 
+    - name: enable selinux boolean
+      seboolean:
+        name: "{{ item }}"
+        state: yes
+        persistent: yes
+      loop:
+        - httpd_can_network_connect_db
+        - httpd_can_network_connect
+
     - name: Open httpd port
       firewalld:
         service: http
@@ -144,15 +153,6 @@
         state: enabled
         immediate: true
         permanent: true
-
-    - name: enable selinux boolean
-      seboolean:
-        name: "{{ item }}"
-        state: yes
-        persistent: yes
-      loop:
-        - httpd_can_network_connect_db
-        - httpd_can_network_connect
 
     - name: Install haproxy
       yum: 
