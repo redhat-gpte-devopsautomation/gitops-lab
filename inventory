@@ -1,0 +1,10 @@
+[haproxy]
+servera.lab.example.com
+
+[backend]
+serverb.lab.example.com 
+serverc.lab.example.com 
+
+[db]
+serverd.lab.example.com
+
