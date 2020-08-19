@@ -1,9 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ web_title }}</title>
+</head>
+<body background=images/ansible_bg.png>
+
 <?php
 	$db=mysqli_connect("{{ groups['dbs'][0] }}","{{ db.user }}","{{ db.password }}","{{ db.database }}");
-
-	if (mysqli_connect_errno()){
-		echo "Failed to connect";
+	if (mysqli_connect_errno()){ 
+	
+	echo "<h1> Failed to connect <h1>"; 
+	}else {
+	echo "<h1> Welcome to Ansible Automation Webpage </h1>";
 	}
+	
 	$sql="SELECT username,userpass,usershell,userhome from login where username=\"$_GET[name]\"";
 	if($result=mysqli_query($db,$sql)){
 
@@ -16,16 +26,13 @@
 	# echo $_GET['name']. " User not found.";
 
 ?>
-
-
-<html>
-<body>
-
+	<center>
 	<form action="<?php $_PHP_SELF?>" method="GET" >
 		Enter User Name: <input type=text name="name" />
 		<input type="submit" />
 
 	</form>
+	</center>
 
 </body>
 
