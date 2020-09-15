@@ -8,6 +8,12 @@
   loop_control:
     loop_var: __package
 
+- name: Change apache port
+  replace:
+  path: /etc/httpd/conf/httpd.conf
+  regexp: '^Listen 80'
+  replace: 'Listen 8080'
+
 - name: Copy image directory
   copy:
     src: images
