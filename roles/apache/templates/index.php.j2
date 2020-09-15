@@ -6,7 +6,7 @@
 <body>
 <center>
 <?php
-	$db=mysqli_connect("{{ groups['appdbs'][0] }}","{{ mysql_info.user }}","{{ mysql_info.password }}","{{ mysql_info.database }}");
+	$db=mysqli_connect("{{  hostvars[groups['appdbs'][0]]['ansible_host'] }}","{{ mysql_info.user }}","{{ mysql_info.password }}","{{ mysql_info.database }}");
 	if (mysqli_connect_errno()){ 
 	
 	echo "<h1> Failed to connect <h1>"; 
