@@ -18,7 +18,7 @@
     src: index.php.j2
     dest: /var/www/html/index.php
   notify:
-    - restart_httpd
+    - restart_apache
 
 - name: Start apache server
   service:
