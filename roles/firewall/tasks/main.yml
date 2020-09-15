@@ -25,7 +25,7 @@
 - name: Open tcp port
   when: firewall_tcp_ports is defined
   firewalld:
-    port: "{{ item }}/tcp"
+    port: "{{ __tcp_port }}/tcp"
     permanent: yes
     immediate: yes
     state: enabled
@@ -36,7 +36,7 @@
 - name: Open tcp port
   when: firewall_udp_ports is defined
   firewalld:
-    port: "{{ item }}/udp"
+    port: "{{ __udp_port }}/udp"
     permanent: yes
     immediate: yes
     state: enabled

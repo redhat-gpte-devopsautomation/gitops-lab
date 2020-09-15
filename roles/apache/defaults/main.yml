@@ -1,8 +1,5 @@
 ---
 
-firewall_services:
-  - http
-
 apache_packages: 
   - httpd
   - php

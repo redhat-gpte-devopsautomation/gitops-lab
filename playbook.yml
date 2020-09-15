@@ -6,6 +6,9 @@
     - name: Setup firewall
       include_role:
         name: firewall
+      vars:
+        firewall_services:
+          - mysql
 
     - name: Setup mysql server
       include_role:
@@ -17,6 +20,9 @@
     - name: Setup firewall
       include_role:
         name: firewall
+      vars:
+        firewall_services:
+          - http
 
     - name: Setup apache server
       include_role:
@@ -28,6 +34,11 @@
     - name: Setup firewall
       include_role:
         name: firewall
+      vars:
+        firewall_services:
+          - http
+        firewall_tcp_ports:
+          - 5000
 
     - name: Setup HAproxy server
       include_role:

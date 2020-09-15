@@ -1,8 +1,5 @@
 ---
 
-firewall_services:
-  - mysql
-
 mysql_info:
   user: devops
   privilege: "*.*:ALL,GRANT"
