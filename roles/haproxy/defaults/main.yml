@@ -8,7 +8,7 @@ firewall_tcp_ports:
 haproxy_packages:
   - haproxy
 
-haproxy_service: 
+haproxy_services: 
   - haproxy
 
 ...
