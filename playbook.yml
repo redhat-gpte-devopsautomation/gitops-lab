@@ -1,181 +1,36 @@
 ---
 
-- name: Play to setup db server
-  hosts: dbs
-  vars_files: 
-    - vars.yml
+- name: Play to setup mysql server
+  hosts: appdbs
   tasks:
+    - name: Setup firewall
+      include_role:
+        name: firewall
 
-    - name: Install Firewalld
-      yum:
-        name: firewalld
-        state: latest
-        
-    - name: Start firewalld
-      service:
-        name: firewalld
-        enabled: yes
-        state: started
-        
-    - name: Open mysql port
-      firewalld:
-        service: mysql
-        state: enabled
-        immediate: true
-        permanent: true
-
-    - name: Install mysql
-      yum: 
-        name: "{{ item  }}"
-        state: latest
-      loop: "{{ db.packages }}"
-
-    - name: Start mysql 
-      service:
-        name: "{{ db.service }}"
-        enabled: true
-        state: started
-
-    - name: DB users have privileges on all databases
-      mysql_user:
-        name: "{{ db.user }}"
-        priv: "{{ db.privilege }}"
-        append_privs: yes
-        password: "{{ db.password }}"
-        host: '%'
-
-    - name: Copy database dump file
-      copy:
-        src: "{{ db['backupfile']}}"
-        dest: /tmp
-
-    - name: Restore database
-      mysql_db:
-        name: "{{ db['database'] }}"
-        state: import
-        target: "/tmp/{{ db['backupfile'] }}"
-  
+    - name: Setup mysql server
+      include_role:
+        name: mysql-server
  
-- name: Play to setup backend servers
-  hosts: backends
-  vars_files: 
-    - vars.yml
-  handlers:
-  
-    - name: restart_httpd
-      service:
-        name: "{{ backend.service }}"
-        state: restarted
-
+- name: Play to setup apache servers
+  hosts: apps
   tasks:
- 
-    - name: Install Firewalld
-      yum:
-        name: firewalld
-        state: latest
-        
-    - name: Start firewalld
-      service:
-        name: firewalld
-        enabled: yes
-        state: started
+    - name: Setup firewall
+      include_role:
+        name: firewall
 
-    - name: enable selinux boolean
-      seboolean:
-        name: "{{ item }}"
-        state: yes
-        persistent: yes
-      loop:
-        - httpd_can_network_connect_db
-        - httpd_can_network_connect
+    - name: Setup apache server
+      include_role:
+        name: apache
 
-    - name: Open httpd port
-      firewalld:
-        service: http
-        state: enabled
-        immediate: true
-        permanent: true
-
-    - name: Install httpd
-      yum:
-        name: "{{ item }}"
-        state: latest
-      loop: "{{ backend.packages }}"
-
-    - name: Copy images
-      copy:
-        src: images
-        dest: /var/www/html/
-
-    - name: Copy php program file
-      template:
-        src: index.php.j2
-        dest: /var/www/html/index.php
-      notify:
-        - restart_httpd
-
-    - name: Start httpd
-      service:
-        name: "{{ backend.service }}"
-        enabled: true
-        state: started
- 
- 
-- name: Configure webserver and db with load balancer
+- name: Play to setup Haproxy
   hosts: frontends
-  vars_files: 
-    - vars.yml
-  handlers:
-  
-    - name: restart_haproxy
-      service:
-        name: "{{ frontend.service }}"
-        state: restarted
- 
   tasks:
+    - name: Setup firewall
+      include_role:
+        name: firewall
 
-    - name: Install Firewalld
-      yum:
-        name: firewalld
-        state: latest
-        
-    - name: Start firewalld
-      service:
-        name: firewalld
-        enabled: yes
-        state: started
-
-    - name: Open haproxy port
-      firewalld:
-        service: http
-        state: enabled
-        immediate: true
-        permanent: true
-
-    - name: Open haproxy statistics port
-      firewalld:
-        port: 5000/tcp
-        state: enabled
-        immediate: true
-        permanent: true
-
-    - name: Install haproxy
-      yum: 
-        name: "{{ item  }}"
-        state: latest
-      loop: "{{ frontend.packages }}"
-
-    - name: Copy haproxy template
-      template:
-        src: haproxy.cfg.j2
-        dest: /etc/haproxy/haproxy.cfg
-      notify:
-        - restart_haproxy
-
-    - name: Start haproxy 
-      service:
-        name: "{{ frontend.service }}"
-        enabled: true
-        state: started
+    - name: Setup HAproxy server
+      include_role:
+        name: haproxy
 
 ...

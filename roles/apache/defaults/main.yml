@@ -1,0 +1,19 @@
+---
+
+firewall_services:
+  - http
+
+apache_packages: 
+  - httpd
+  - php
+  - php-mysql
+
+apache_services: 
+  - httpd
+
+mysql_info:
+  user: devops
+  database: userdb
+  password: redhat
+
+...

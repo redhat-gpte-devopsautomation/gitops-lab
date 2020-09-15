@@ -1,0 +1,14 @@
+---
+
+firewall_services:
+  - http
+firewall_tcp_ports:
+  - 5000
+
+haproxy_packages:
+  - haproxy
+
+haproxy_service: 
+  - haproxy
+
+...
