@@ -23,6 +23,8 @@
       vars:
         firewall_services:
           - http
+        firewall_tcp_ports:
+          - 8080
 
     - name: Setup apache server
       include_role:

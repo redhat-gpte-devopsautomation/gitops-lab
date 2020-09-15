@@ -11,7 +11,7 @@
 - name: Change apache port
   replace:
     path: /etc/httpd/conf/httpd.conf
-    regexp: '^Listen 80'
+    regexp: '^Listen.*$'
     replace: 'Listen 8080'
 
 - name: Copy image directory
