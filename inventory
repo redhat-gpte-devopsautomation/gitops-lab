@@ -1,0 +1,6 @@
+[apps]
+localhost ansible_connection=local
+[frontends]
+localhost ansible_connection=local
+[appdbs]
+localhost ansible_connection=local
