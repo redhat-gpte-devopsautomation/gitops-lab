@@ -1,3 +1,9 @@
 ---
+- name: Replace me
+  hosts: localhost
+  tasks:
+    - name: Dummy task
+      debug:
+        msg: "I am lazy, do nothing"
 
 ...
