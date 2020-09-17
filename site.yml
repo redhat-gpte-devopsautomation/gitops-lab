@@ -1,6 +1,7 @@
 ---
 - name: Replace me
   hosts: localhost
+  become: false
   tasks:
     - name: Dummy task
       debug:
