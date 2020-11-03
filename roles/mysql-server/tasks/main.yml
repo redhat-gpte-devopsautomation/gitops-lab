@@ -17,6 +17,15 @@
   loop_control:
     loop_var: __service
 
+- name: Delete anonymous MySQL user
+  mysql_user:
+    name: ""
+    host: "{{item}}"
+    state: absent
+  with_items:
+    - localhost
+    - "{{ ansible_nodename }}"
+
 - name: Set user's privileges
   mysql_user:
     name: "{{ mysql_info.user }}"
